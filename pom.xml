@@ -9,13 +9,11 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>Spigot</module>
         <module>BungeeCord</module>
+        <module>Spigot</module>
         <module>Api-core</module>
         <module>Api</module>
         <module>Serializable</module>
-        <module>Spigot-Api</module>
-        <module>SpigotApi</module>
     </modules>
 
 
