@@ -1,0 +1,6 @@
+/Server/
+/.idea/
+*.iml
+*.properties
+*.db
+/*/target/
