@@ -2,6 +2,7 @@ package org.morazzer.serversystem.spigot.api;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.jetbrains.annotations.NotNull;
 import org.morazzer.serversystem.spigot.api.types.interfaces.Rank;
 
 import java.util.UUID;
@@ -12,15 +13,26 @@ import java.util.UUID;
  */
 public interface RankApi {
 
-    static RankApi getInstance() {
-        return null; /* Implemented in Runtime */
-    }
+    @NotNull
+    static RankApi getInstance() { return null; /* Implemented in Runtime */ }
 
     public Rank getRankPerName(String name);
-    public boolean hasPermission(Rank rank, String permission);
-    public boolean hasPermission(Rank rank, Permission permission);
-    public boolean hasPermission(Player player, String permission);
-    public boolean hasPermission(Player player, Permission permission);
+    default public boolean hasPermission(Rank rank, String permission) {
+        return hasPermission(rank, permission, true);
+    }
+    default public boolean hasPermission(Rank rank, Permission permission) {
+        return hasPermission(rank, permission, true);
+    }
+    default public boolean hasPermission(Player player, String permission) {
+        return hasPermission(player, permission, true);
+    }
+    default public boolean hasPermission(Player player, Permission permission) {
+        return hasPermission(player, permission, true);
+    }
+    public boolean hasPermission(Rank rank, String permission, boolean inherited);
+    public boolean hasPermission(Rank rank, Permission permission, boolean inherited);
+    public boolean hasPermission(Player player, String permission, boolean inherited);
+    public boolean hasPermission(Player player, Permission permission, boolean inherited);
     public Rank getRank(UUID uuid);
     public Rank getRank(String uuid);
     public Rank addRankAndGet(UUID uuid);

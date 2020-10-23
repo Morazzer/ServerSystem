@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.eclipse.jetty.server.session.DatabaseAdaptor;
 import org.eclipse.jetty.server.session.JDBCSessionDataStoreFactory;
-import org.morazzer.serversystem.api.db.SqLiteSetup;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,6 +31,7 @@ public class DataSource {
     private static boolean webSiteEnabled;
     private static boolean internalSite;
     private static String siteName;
+    private static boolean enable_auth;
 
     static {
 
@@ -71,6 +71,18 @@ public class DataSource {
                 properties.setProperty("api_website", "false");
                 properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
             }
+            if (!properties.containsKey("enable_auth")) {
+                properties.setProperty("enable_auth", "true");
+                properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
+            }
+
+            // Default
+
+            api_port = Integer.parseInt(properties.getProperty("api_port"));
+            api_host = properties.getProperty("api_host");
+            webSiteEnabled = properties.getProperty("api_website").equalsIgnoreCase("true");
+            enable_auth = properties.getProperty("enable_auth").equalsIgnoreCase("ture");
+
             if (properties.getProperty("api_website").equalsIgnoreCase("true")) {
                 if (!properties.containsKey("website_internal")) {
                     properties.put("website_internal", "true");
@@ -129,11 +141,6 @@ public class DataSource {
             if (siteName == null) {
                 siteName = "app";
             }
-
-
-            api_port = Integer.parseInt(properties.getProperty("api_port"));
-            api_host = properties.getProperty("api_host");
-            webSiteEnabled = properties.getProperty("api_website").equalsIgnoreCase("true");
 
             ds = new HikariDataSource(config);
 
@@ -207,5 +214,13 @@ public class DataSource {
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public static boolean isAuthEnabled() {
+        return enable_auth;
+    }
+
+    public static void setEnable_auth(boolean enable_auth) {
+        DataSource.enable_auth = enable_auth;
     }
 }

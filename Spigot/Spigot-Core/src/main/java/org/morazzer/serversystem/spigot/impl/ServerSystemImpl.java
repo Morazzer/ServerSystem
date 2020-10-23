@@ -13,6 +13,7 @@ import org.morazzer.serversystem.spigot.ServerSystem;
 import org.morazzer.serversystem.spigot.api.Api;
 import org.morazzer.serversystem.spigot.api.websocket.Websocket;
 import org.morazzer.serversystem.spigot.impl.api.ApiImpl;
+import org.morazzer.serversystem.spigot.impl.api.RankApiImpl;
 import org.morazzer.serversystem.spigot.impl.api.models.SignUpModel;
 import org.morazzer.serversystem.spigot.impl.api.models.TokenModel;
 import org.morazzer.serversystem.spigot.impl.api.websocket.WebsocketImpl;
@@ -57,6 +58,7 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
     public void onEnable() {
         InstanceManager.setInstance(this);
 
+        new RankApiImpl();
         new ApiImpl();
 
         client = HttpClientBuilder.create().setMaxConnTotal(Integer.MAX_VALUE).build();
@@ -138,9 +140,15 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
         return Api.getInstance().execute(requestBase);
     }
 
-    public HttpResponse executeS(HttpRequestBase requestBase) {
-        return Api.getInstance().executeS(requestBase);
+    public HttpResponse executeRaw(HttpRequestBase requestBase) {
+        return Api.getInstance().executeRaw(requestBase);
     }
+
+    @Override
+    public void reconnect() {
+        Api.getInstance().reconnect();
+    }
+
     public HttpClient getClient() {
         return Api.getInstance().getClient();
     }
@@ -156,5 +164,9 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public static void setToken(String token) {
+        ServerSystemImpl.token = token;
     }
 }

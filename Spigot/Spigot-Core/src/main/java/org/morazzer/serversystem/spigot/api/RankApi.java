@@ -30,7 +30,7 @@ public interface RankApi {
     default public boolean hasPermission(Player player, Permission permission) {
         return hasPermission(player, permission, true);
     }
-    public boolean hasPermission(Rank rank, String permission, boolean inherited);
+    boolean hasPermission(Rank rank, String permission, boolean inherited);
     public boolean hasPermission(Rank rank, Permission permission, boolean inherited);
     public boolean hasPermission(Player player, String permission, boolean inherited);
     public boolean hasPermission(Player player, Permission permission, boolean inherited);

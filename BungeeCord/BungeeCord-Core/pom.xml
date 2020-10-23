@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>BungeeCord</artifactId>
+    <artifactId>ServerSystem-BungeeCord-Core</artifactId>
 
     <repositories>
         <repository>
@@ -30,15 +30,23 @@
             <groupId>io.github.waterfallmc</groupId>
             <artifactId>waterfall-api</artifactId>
             <version>1.16-R0.2-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
             <version>1.15-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- API STUFF -->
 
+        <dependency>
+            <groupId>org.morazzer.serversystem</groupId>
+            <artifactId>Serializable</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
@@ -46,9 +54,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.morazzer.serversystem</groupId>
-            <artifactId>Api-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.12</version>
         </dependency>
     </dependencies>
 

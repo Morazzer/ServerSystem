@@ -11,9 +11,7 @@
     <modules>
         <module>BungeeCord</module>
         <module>Spigot</module>
-        <module>Api-core</module>
         <module>Api</module>
-        <module>Serializable</module>
     </modules>
 
 

@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.morazzer.serversystem.spigot.ServerSystem;
+import org.morazzer.serversystem.spigot.api.Api;
 import org.morazzer.serversystem.spigot.impl.ServerSystemImpl;
 import org.morazzer.serversystem.spigot.impl.types.abstracts.Command;
 
@@ -46,6 +47,8 @@ public class TestCommand extends Command {
         jsonObject.add("permissions", jsonArray);
 
         httpPut.setEntity(new StringEntity(jsonObject.toString(), ContentType.APPLICATION_JSON));
+
+        System.out.println(Api.getInstance().execute(httpPut));
 
         ServerSystem.getInstance().getWebsocket().send("test");
     }

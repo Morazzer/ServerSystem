@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 /**
  * @author Morazzer
- * @since Date 17.10.2020 15:01:51
+ * @since Date 17.10.2020 17:23:37
  */
 public interface User extends Player {
 

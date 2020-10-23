@@ -1,5 +1,6 @@
 package org.morazzer.serversystem.api;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import org.morazzer.serversystem.api.logs.RequestLogger;
@@ -30,29 +31,42 @@ public class Main {
             {
                 acceptsAll(asList("dev", "dev-mode"), "Enable Dev Logging");
                 acceptsAll(asList("?", "help"), "Hilfe");
+                acceptsAll(asList("noauth", "disable-auth"), "Deaktivate the Auth");
             }
         };
+        try {
+            OptionSet options = optionParser.parse(args);
 
-        OptionSet options = optionParser.parse(args);
+            if (options != null) {
+                if (options.has("?") || options.has("help")) {
+                    try {
+                        optionParser.printHelpOn(System.out);
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
 
-        if (options != null) {
-            if (options.has("?") || options.has("help")) {
-                try {
-                    optionParser.printHelpOn(System.out);
-                } catch (IOException exception) {
-                    exception.printStackTrace();
+                if (options.has("dev") || options.has("dev-mode")) {
+                    enableDevLogging = true;
+                }
+                if (options.has("noauth") ||options.has("disable-auth")) {
+                    DataSource.setEnable_auth(false);
                 }
             }
-
-            if (options.has("dev") || options.has("dev-mode")) {
-                enableDevLogging = true;
+        } catch (Exception exception) {
+            try {
+                optionParser.printHelpOn(System.out);
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
         new Api(enableDevLogging,
                 DataSource.isWebSiteEnabled(),
                 DataSource.isInternalSite(),
-                DataSource.getSiteName());
+                DataSource.getSiteName(),
+                DataSource.isAuthEnabled());
 
         Api.getApi().addRequestHandler(new RequestLogger());
 

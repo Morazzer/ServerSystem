@@ -1,3 +1,4 @@
 name: ServerSystem
 version: 1.0
-main: org.morazzer.serversystem.spigot.impl.ServerSystem
+main: org.morazzer.serversystem.spigot.impl.ServerSystemImpl
+api-version: 1.13

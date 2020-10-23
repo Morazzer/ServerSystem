@@ -16,15 +16,12 @@ public interface Api {
     static Api getInstance() {
         return (Api) InstanceManager.getInstance(Api.class);
     }
-
     HttpClient getClient();
-
     String getApiPath();
-
     String getApiPath(String path);
-
     String execute(HttpRequestBase requestBase);
+    HttpResponse executeRaw(HttpRequestBase requestBase);
+    void reconnect();
 
-    HttpResponse executeS(HttpRequestBase requestBase);
 
 }

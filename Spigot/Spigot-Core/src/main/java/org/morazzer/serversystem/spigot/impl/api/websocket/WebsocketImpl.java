@@ -7,13 +7,17 @@ import org.bukkit.Bukkit;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.morazzer.serversystem.serializable.RankUpdate;
+import org.morazzer.serversystem.serializable.UserUpdate;
 import org.morazzer.serversystem.spigot.InstanceManager;
 import org.morazzer.serversystem.spigot.ServerSystem;
+import org.morazzer.serversystem.spigot.api.Api;
 import org.morazzer.serversystem.spigot.api.websocket.Websocket;
-import org.morazzer.serversystem.spigot.impl.ServerSystemImpl;
 import org.morazzer.serversystem.spigot.impl.api.handler.RankUpdateHandler;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.util.Base64;
 
@@ -23,16 +27,30 @@ import java.util.Base64;
  */
 public class WebsocketImpl extends WebSocketClient implements Websocket {
 
+    private static int runs = 5;
+    private static int trys = 1;
+    private static URI uri;
+    private static boolean reconnected = false;
+
     public WebsocketImpl(URI serverUri) {
         super(serverUri);
+        uri = serverUri;
         InstanceManager.setInstance(this);
-        connect();
+        try {
+            connect();
+        } catch (Exception exception) {
+            reconnectTimer();
+            return;
+        }
+
+        if (isOpen())
+            if (reconnected)
+                Api.getInstance().reconnect();
         //addHeader("token", ServerSystem.getToken());
     }
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        send("test");
         System.out.println("ServerSystem websocket connectet on " + getURI().toString());
     }
 
@@ -49,41 +67,49 @@ public class WebsocketImpl extends WebSocketClient implements Websocket {
                 Object object = ois.readObject();
 
 
-
                 if (object instanceof RankUpdate) {
                     RankUpdateHandler.handle((RankUpdate) object);
+                } else if (object instanceof UserUpdate) {
+
                 }
-            } catch (IOException | ClassNotFoundException ignored) {}
+            } catch (IOException | ClassNotFoundException ignored) {
+            }
 
         }
     }
 
-    @Override
-    public void onClose(int i, String s, boolean b) {
-        var ref = new Object() {
-            int runs = 5;
-            int trys = 0;
-        };
-        Bukkit.getScheduler().runTaskTimer(ServerSystem.getPlugin(),bukkitTask -> {
-            if (ref.runs == 0) {
-                connect();
-                if (isOpen()) {
-                    System.out.println("Succesfully reconnectet");
-                    bukkitTask.cancel();
-                } else {
-                    ref.trys++;
-                    ref.runs = 5 * ref.trys;
+    public static void reconnectTimer() {
+        reconnected = true;
+        Bukkit.getScheduler().runTaskTimer(ServerSystem.getPlugin(), bukkitTask -> {
+            if (runs == 0) {
+                if (trys > 4) {
+                    if (trys == 10) {
+                        Bukkit.shutdown();
+                    } else
+                        System.out.println("Shutdown in " + (10 - trys) + " runs");
                 }
-            } else
-                System.out.println("Webscoket Disconnectet try reconnect in " + ref.runs);
-
-            ref.runs = ref.runs - 1;
+                bukkitTask.cancel();
+                trys++;
+                runs = 5 * trys;
+                try {
+                    new WebsocketImpl(uri);
+                } catch (Exception exception) {
+                    reconnectTimer();
+                }
+            } else {
+                System.out.println("Webscoket Disconnectet try reconnect in " + runs);
+                runs = runs - 1;
+            }
         }, 0, 20);
     }
 
     @Override
-    public void onError(Exception e) {
+    public void onClose(int i, String s, boolean b) {
+        reconnectTimer();
+    }
 
+    @Override
+    public void onError(Exception e) {
     }
 
 

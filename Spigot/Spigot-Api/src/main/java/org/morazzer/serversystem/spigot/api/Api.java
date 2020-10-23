@@ -12,18 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public interface Api {
 
     @NotNull
-    static Api getInstance() {
-        return null; /* Implemented in Runtime */
-    }
-
+    static Api getInstance() { return null; /* Implemented in Runtime */ }
     HttpClient getClient();
-
     String getApiPath();
-
     String getApiPath(String path);
-
     String execute(HttpRequestBase requestBase);
+    HttpResponse executeRaw(HttpRequestBase requestBase);
+    void reconnect();
 
-    HttpResponse executeS(HttpRequestBase requestBase);
 
 }

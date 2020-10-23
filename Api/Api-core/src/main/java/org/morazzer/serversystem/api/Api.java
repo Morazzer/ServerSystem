@@ -37,22 +37,22 @@ public class Api {
     public final List<String> tokens;
 
     public Api(boolean enableWebPage, boolean internalSite, String webPageName) {
-        this(false, enableWebPage, internalSite, webPageName);
+        this(false, enableWebPage, internalSite, webPageName, true);
     }
 
     public Api(boolean enableWebPage, String webPageName) {
-        this(false, enableWebPage, true, webPageName);
+        this(false, enableWebPage, true, webPageName, true);
     }
 
     public Api(boolean enableDevLogging) {
-        this(enableDevLogging, false, true, "");
+        this(enableDevLogging, false, true, "", true);
     }
 
     public Api() {
-        this(false, false, true, "");
+        this(false, false, true, "", true);
     }
 
-    public Api(boolean enableDevLogging, boolean enablewebPage, boolean internalSite, String webPageName) {
+    public Api(boolean enableDevLogging, boolean enablewebPage, boolean internalSite, String webPageName, boolean useAuth) {
 
         if (!DataSource.isMySql()) {
             SqLiteSetup.setup();
@@ -108,13 +108,18 @@ public class Api {
                     if (enableDevLogging) ctx.res.setHeader("path", ctx.fullUrl());
                     if (enableDevLogging) requestHandlers.forEach(requestHandler -> requestHandler.handleRequest(ctx));
                     if (ctx.path().contains("/auth")) return;
-                    if (ctx.header("token") == null || !tokens.contains(ctx.header("token"))) throw new UnauthorizedResponse("Token isn't valid");
+                    if (useAuth) if (ctx.header("token") == null || !tokens.contains(ctx.header("token")))
+                        throw new UnauthorizedResponse("Token isn't valid");
                     if (!enableDevLogging) requestHandlers.forEach(requestHandler -> requestHandler.handleRequest(ctx));
                 });
                 path("/v1", () -> {
                     path("/auth", () -> {
-                        post("/signin", AuthController::signin);
-                        post("/signout", AuthController::signout);
+                        if (useAuth) {
+                            post("/signin", AuthController::signin);
+                            post("/signout", AuthController::signout);
+                        } else {
+                            post("/signin", context -> context.result("{\"token\": \"NOTOKEN\"}"));
+                        }
                     });
                     path("/user", () -> {
                         get("/list", UserConrtoller::list);
