@@ -2,7 +2,7 @@ package org.morazzer.serversystem.api.v1.controller;
 
 import com.google.gson.Gson;
 import io.javalin.http.Context;
-import org.morazzer.serversystem.api.types.dataclasses.Rank;
+import org.morazzer.serversystem.api.types.v1.dataclasses.Rank;
 import org.morazzer.serversystem.api.v1.Websocket;
 import org.morazzer.serversystem.api.v1.models.UUIDModel;
 import org.morazzer.serversystem.api.v1.models.rank.RankPermissionModel;
@@ -21,7 +21,7 @@ import java.util.UUID;
  */
 public class RankController {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     public static void create(Context context) {
         RankModel data = context.bodyAsClass(RankModel.class);

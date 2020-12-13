@@ -9,8 +9,8 @@ import org.eclipse.jetty.server.session.SessionCache;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.morazzer.serversystem.api.db.MySqlSetup;
 import org.morazzer.serversystem.api.db.SqLiteSetup;
-import org.morazzer.serversystem.api.types.dataclasses.Rank;
-import org.morazzer.serversystem.api.types.dataclasses.Token;
+import org.morazzer.serversystem.api.types.v1.dataclasses.Rank;
+import org.morazzer.serversystem.api.types.v1.dataclasses.Token;
 import org.morazzer.serversystem.api.v1.Websocket;
 import org.morazzer.serversystem.api.v1.controller.*;
 
@@ -150,6 +150,9 @@ public class Api {
                     });
                     path("/moderation", () -> {
                         delete("/ban", ModerationController::ban);
+                    });
+                    path("/language", () -> {
+                        get("/get", LanguageController::get);
                     });
                 });
             });

@@ -19,6 +19,7 @@ public class SqLiteSetup {
             connection.createStatement().execute("create table if not exists ranks(id INTEGER not null primary key AUTOINCREMENT, uuid varchar(36), name text not null, color text not null, prefix text not null, level integer serial default value, tab_level integer serial default value, inherit varchar(36))");
             connection.createStatement().execute("create table if not exists players(id integer not null primary key AUTOINCREMENT, uuid varchar(36), name text, `rank` text, coins integer)");
             connection.createStatement().execute("create table if not exists permissions(id integer not null primary key AUTOINCREMENT, `rank` varchar(36), permission text)");
+            connection.createStatement().execute("create table if not exists apisettings(id integer not null primary key AUTOINCREMENT, `key` text not null, value text not null)");
         } catch (SQLException exception) {
             exception.printStackTrace();
         }

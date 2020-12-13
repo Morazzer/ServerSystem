@@ -1,0 +1,4 @@
+{
+    "startup.load.ranks": "Ränge geladen",
+    "websocket.onopen": "ServerSystem Webscoket verbunen mit $URL"
+}

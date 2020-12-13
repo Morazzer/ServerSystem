@@ -1,4 +1,4 @@
-package org.morazzer.serversystem.api.types.dataclasses;
+package org.morazzer.serversystem.api.types.v1.dataclasses;
 
 /**
  * @author Morazzer

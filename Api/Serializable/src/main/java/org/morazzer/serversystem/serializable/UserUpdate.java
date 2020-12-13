@@ -1,5 +1,7 @@
 package org.morazzer.serversystem.serializable;
 
+import org.morazzer.serversystem.serializable.enums.UserUpdateType;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -11,5 +13,6 @@ public class UserUpdate implements Serializable {
 
     public UUID uuid;
     public UUID rankUUID;
+    public UserUpdateType userUpdateType;
 
 }

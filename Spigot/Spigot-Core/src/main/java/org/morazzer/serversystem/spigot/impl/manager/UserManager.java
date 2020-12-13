@@ -49,4 +49,7 @@ public class UserManager {
         }
     }
 
+    public static ConcurrentHashMap<UUID, OfflineUser> getUsersOnServer() {
+        return usersOnServer;
+    }
 }

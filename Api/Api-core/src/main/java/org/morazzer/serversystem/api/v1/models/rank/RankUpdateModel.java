@@ -1,9 +1,8 @@
 package org.morazzer.serversystem.api.v1.models.rank;
 
-import org.morazzer.serversystem.api.types.dataclasses.Rank;
+import org.morazzer.serversystem.api.types.v1.dataclasses.Rank;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Morazzer

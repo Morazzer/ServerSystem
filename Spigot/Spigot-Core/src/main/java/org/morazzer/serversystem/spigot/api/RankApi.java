@@ -38,6 +38,7 @@ public interface RankApi {
     public Rank getRank(String uuid);
     public Rank addRankAndGet(UUID uuid);
     public Rank addRankAndGet(String uuid);
+    public int getRanksSize();
 
 
 }

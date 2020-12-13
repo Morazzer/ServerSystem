@@ -19,6 +19,7 @@ public class MySqlSetup {
             connection.prepareCall("create table if not exists ranks(id INTEGER not null primary key auto_increment, uuid varchar(36), name text not null, color text not null, prefix text not null, level integer, tab_level integer, inherit varchar(36))").execute();
             connection.prepareCall("create table if not exists players(id integer not null primary key auto_increment, uuid varchar(36), name text, `rank` text, coins integer)").execute();
             connection.prepareCall("create table if not exists permissions(id integer not null primary key auto_increment, `rank` varchar(36), permission text)").execute();
+            connection.prepareCall("create table if not exists apisettings(id integer not null primary key auto_increment, `key` text not null, value text not null)").execute();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }

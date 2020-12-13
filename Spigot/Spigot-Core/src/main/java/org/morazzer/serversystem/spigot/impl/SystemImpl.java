@@ -1,5 +1,6 @@
 package org.morazzer.serversystem.spigot.impl;
 
+import org.morazzer.serversystem.spigot.InstanceManager;
 import org.morazzer.serversystem.spigot.System;
 import org.morazzer.serversystem.spigot.impl.manager.RankManager;
 
@@ -10,6 +11,7 @@ import org.morazzer.serversystem.spigot.impl.manager.RankManager;
 public class SystemImpl implements System {
 
     public void load() {
+        InstanceManager.setInstance(this);
         loadRanks();
     }
 

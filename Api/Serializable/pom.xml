@@ -9,5 +9,5 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ServerSystem-Serializable</artifactId>
+    <artifactId>ServerSystem-Api-Serializable</artifactId>
 </project>

@@ -12,7 +12,7 @@ import org.morazzer.serversystem.spigot.impl.api.types.dataclas.RankImpl;
  */
 public class RankUpdateHandler {
 
-    public final static void handle(RankUpdate update) {
+    public static void handle(RankUpdate update) {
         switch (update.type) {
             case CREATE: {
                 Rank rank = RankApi.getInstance().addRankAndGet(update.uuid);

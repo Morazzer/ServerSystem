@@ -13,6 +13,7 @@ import org.morazzer.serversystem.spigot.ServerSystem;
 import org.morazzer.serversystem.spigot.api.Api;
 import org.morazzer.serversystem.spigot.api.websocket.Websocket;
 import org.morazzer.serversystem.spigot.impl.api.handler.RankUpdateHandler;
+import org.morazzer.serversystem.spigot.impl.api.handler.UserUpdateHandler;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -31,6 +32,7 @@ public class WebsocketImpl extends WebSocketClient implements Websocket {
     private static int trys = 1;
     private static URI uri;
     private static boolean reconnected = false;
+    public static boolean connnected = false;
 
     public WebsocketImpl(URI serverUri) {
         super(serverUri);
@@ -51,7 +53,7 @@ public class WebsocketImpl extends WebSocketClient implements Websocket {
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        System.out.println("ServerSystem websocket connectet on " + getURI().toString());
+        System.out.println("§bServerSystem websocket connectet on §6" + getURI().toString() + "§r");
     }
 
     @Override
@@ -70,7 +72,7 @@ public class WebsocketImpl extends WebSocketClient implements Websocket {
                 if (object instanceof RankUpdate) {
                     RankUpdateHandler.handle((RankUpdate) object);
                 } else if (object instanceof UserUpdate) {
-
+                    UserUpdateHandler.handle((UserUpdate) object);
                 }
             } catch (IOException | ClassNotFoundException ignored) {
             }
@@ -86,7 +88,7 @@ public class WebsocketImpl extends WebSocketClient implements Websocket {
                     if (trys == 10) {
                         Bukkit.shutdown();
                     } else
-                        System.out.println("Shutdown in " + (10 - trys) + " runs");
+                        System.out.println("§cShutdown in §4" + (10 - trys) + "§c run" + ((10 - trys != 1) ? "s" : ""));
                 }
                 bukkitTask.cancel();
                 trys++;
@@ -96,8 +98,9 @@ public class WebsocketImpl extends WebSocketClient implements Websocket {
                 } catch (Exception exception) {
                     reconnectTimer();
                 }
+                System.out.println("§c----------------------------------------------------");
             } else {
-                System.out.println("Webscoket Disconnectet try reconnect in " + runs);
+                System.out.println("§bWebscoket Disconnectet try reconnect in §c" + runs);
                 runs = runs - 1;
             }
         }, 0, 20);

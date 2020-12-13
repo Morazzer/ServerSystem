@@ -3,8 +3,8 @@ package org.morazzer.serversystem.api.v1.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.javalin.http.Context;
-import org.morazzer.serversystem.api.types.dataclasses.Rank;
-import org.morazzer.serversystem.api.types.dataclasses.User;
+import org.morazzer.serversystem.api.types.v1.dataclasses.Rank;
+import org.morazzer.serversystem.api.types.v1.dataclasses.User;
 import org.morazzer.serversystem.api.v1.models.user.*;
 
 import java.util.ArrayList;

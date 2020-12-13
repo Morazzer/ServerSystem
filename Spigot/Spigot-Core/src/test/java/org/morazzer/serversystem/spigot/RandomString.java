@@ -1,4 +1,4 @@
-package org.morazzer.serversystem.api;
+package org.morazzer.serversystem.spigot;
 
 import java.security.SecureRandom;
 import java.util.Locale;

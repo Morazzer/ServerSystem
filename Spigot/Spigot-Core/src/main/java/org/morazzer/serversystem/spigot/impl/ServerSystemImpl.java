@@ -7,16 +7,22 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.morazzer.serversystem.spigot.InstanceManager;
 import org.morazzer.serversystem.spigot.ServerSystem;
 import org.morazzer.serversystem.spigot.api.Api;
+import org.morazzer.serversystem.spigot.api.RankApi;
+import org.morazzer.serversystem.spigot.api.UserApi;
 import org.morazzer.serversystem.spigot.api.websocket.Websocket;
 import org.morazzer.serversystem.spigot.impl.api.ApiImpl;
 import org.morazzer.serversystem.spigot.impl.api.RankApiImpl;
+import org.morazzer.serversystem.spigot.impl.api.UserApiImpl;
 import org.morazzer.serversystem.spigot.impl.api.models.SignUpModel;
 import org.morazzer.serversystem.spigot.impl.api.models.TokenModel;
 import org.morazzer.serversystem.spigot.impl.api.websocket.WebsocketImpl;
+import org.morazzer.serversystem.spigot.impl.manager.UserManager;
 import org.morazzer.serversystem.spigot.impl.types.annotations.Command;
 import org.reflections.Reflections;
 
@@ -24,8 +30,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -56,6 +65,7 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
 
     @Override
     public void onEnable() {
+
         InstanceManager.setInstance(this);
 
         new RankApiImpl();
@@ -69,15 +79,26 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
 
         new SystemImpl().load();
 
-        Reflections reflections = new Reflections("org.morazzer.serversystem.spigot");
+        Reflections reflections = new Reflections("org.morazzer.serversystem.spigot.impl");
 
         for (Class<?> clazz : reflections.getTypesAnnotatedWith(Command.class)) {
             try {
-                clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                Constructor<?> constructor = Arrays.stream(clazz.getConstructors()).filter(constructorTemp -> constructorTemp.getParameterCount() == 0).findFirst().orElse(null);
+
+                assert constructor != null;
+
+                constructor.newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
+
+        System.out.print(
+                "§c------------------------------------------§r\n" +
+                "§bRanks Loaded§f: §6" + RankApi.getInstance().getRanksSize() + "§r\n"+
+                "§bPlayers on Network§f: §6" + UserManager.getUsersOnServer().size() + "\n" +
+                "§c------------------------------------------§r\n"
+        );
     }
 
     private void signin() {
@@ -91,6 +112,8 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
 
             properties.load(new FileReader(propertiesFile));
 
+            SignUpModel data = new SignUpModel();
+
             if (!properties.containsKey("api_host")) {
                 properties.put("api_host", "127.0.0.1");
                 properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
@@ -99,24 +122,26 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
                 properties.put("api_port", "18706");
                 properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
             }
-            if (!properties.containsKey("api_username")) {
-                properties.put("api_username", "user");
+            if (!properties.containsKey("api_useauth")) {
+                properties.put("api_useauth", "false");
                 properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
             }
-            if (!properties.containsKey("api_password")) {
-                properties.put("api_password", "password");
-                properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
+            if (properties.getProperty("api_useauth").equalsIgnoreCase("true")) {
+                if (!properties.containsKey("api_username")) {
+                    properties.put("api_username", "user");
+                    properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
+                }
+                if (!properties.containsKey("api_password")) {
+                    properties.put("api_password", "password");
+                    properties.store(new FileWriter(propertiesFile), "Saved at " + LocalDateTime.now().toString());
+                }
+                data.username = properties.getProperty("api_username");
+                data.password = properties.getProperty("api_password");
             }
 
             HttpPost login = new HttpPost(getApiPath() + "auth/signin");
 
-            SignUpModel data = new SignUpModel();
-
-            data.username = properties.getProperty("api_username");
-            data.password = properties.getProperty("api_password");
-
             login.setEntity(new StringEntity(new Gson().toJson(data)));
-
 
             TokenModel tokenModel = new Gson().fromJson(execute(login), TokenModel.class);
 
@@ -134,7 +159,6 @@ public class ServerSystemImpl extends JavaPlugin implements ServerSystem {
     public String getApiPath(String path) {
         return Api.getInstance().getApiPath(path);
     }
-
 
     public String execute(HttpRequestBase requestBase) {
         return Api.getInstance().execute(requestBase);

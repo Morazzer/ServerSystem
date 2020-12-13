@@ -17,6 +17,7 @@
         <module>Api</module>
         <module>Api-core</module>
         <module>Serializable</module>
+        <module>Monitor</module>
     </modules>
 
 

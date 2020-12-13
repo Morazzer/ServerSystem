@@ -76,4 +76,9 @@ public class RankApiImpl implements RankApi {
         return addRankAndGet(UUID.fromString(uuid));
     }
 
+    @Override
+    public int getRanksSize() {
+        return RankManager.getRanks().size();
+    }
+
 }

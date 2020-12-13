@@ -6,15 +6,13 @@ import io.javalin.websocket.WsMessageContext;
 import org.morazzer.serversystem.api.Api;
 import org.morazzer.serversystem.api.DataSource;
 import org.morazzer.serversystem.api.RandomString;
-import org.morazzer.serversystem.api.types.dataclasses.Token;
+import org.morazzer.serversystem.api.types.v1.dataclasses.Token;
 import org.morazzer.serversystem.api.v1.models.auth.SignInUserModel;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Random;
 
 /**
  * @author Morazzer
